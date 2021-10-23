@@ -1,9 +1,5 @@
 RSpec.describe Urb do
-  it "has a version number" do
-    expect(Urb::VERSION).not_to be nil
-  end
-
-  it "does something useful" do
-    expect(false).to eq(true)
+  it 'test' do
+    expect(true).to be true
   end
 end

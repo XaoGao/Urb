@@ -1,6 +1,7 @@
-require "urb/version"
+require 'urb/version'
+require_relative './builder'
 
 module Urb
-  class Error < StandardError; end
+  class InvalidUrl < StandardError; end
   # Your code goes here...
 end
