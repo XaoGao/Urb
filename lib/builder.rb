@@ -2,7 +2,13 @@ require 'uri'
 
 module Urb
   class Builder
+    MAX_SIZE_FOR_PORT = 4
     def initialize(url = nil)
+      @scheme = ''
+      @host = ''
+      @port = ''
+      @paths = []
+      @queries = {}
       parse! url
     end
 
@@ -18,6 +24,20 @@ module Urb
       paths.each do |path|
         @paths << path.to_s
       end
+
+      self
+    end
+
+    # Delete fragment from path url
+    # For example:
+    #
+    #   Urb::Builder('http://google.com/users/test/car).cut('test)
+    #
+    # Result will be: 'http://google.com/users/car'
+    #
+    # Retrun self instnce
+    def cut(fragment)
+      @paths.delete fragment.to_s
 
       self
     end
@@ -167,8 +187,15 @@ module Urb
     def build_as_url
       URI(build_as_string)
     rescue Urb::InvalidUrl => e
-      return URI('/')
+      URI('/')
     end
+
+    alias query add
+    alias delete del
+    alias path append
+    alias fragment append
+    alias to_s build_as_string
+    alias to_url build_as_url
 
     private
 
@@ -206,13 +233,7 @@ module Urb
     end
 
     def parse!(url = nil)
-      if url.nil?
-        @scheme = ''
-        @host = ''
-        @port = ''
-        @paths = []
-        @queries = {}
-      else
+      if !url.nil? && !url.empty?
         parser = Urb::UrlParser.new(url)
         parser.parse
         @scheme = parser.scheme
@@ -224,31 +245,15 @@ module Urb
     end
 
     def host_valid?(host)
-      if verify_host host
-        return true
-      end
-
-      false
+      !host.empty? && host.include?('.')
     rescue StandardError => e
       false
-    end
-
-    def verify_host(host)
-      !host.empty? && host.include?('.')
     end
 
     def port_valid?(port)
-      if verify_port port
-        return true
-      end
-
-      false
+      !port.to_s.empty? && port.is_a?(Numeric) && port.to_s.size == MAX_SIZE_FOR_PORT
     rescue StandardError => e
       false
-    end
-
-    def verify_port(port)
-      !port.to_s.empty? && port.is_a?(Numeric) && port.to_s.size == 4
     end
   end
 end

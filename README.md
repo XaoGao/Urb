@@ -1,8 +1,6 @@
 # Urb
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/urb`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Simple gem for dynamicly and fast create a url.
 
 ## Installation
 
@@ -22,7 +20,49 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    $  require 'iri'
+    url = Urb::Builder.new('http://example.com')
+            .append('users').append(:Joy) # add path fragment -> http://example.com/users/joy
+            .cut('joy) # remove fragment form path-> http://example.com/users
+            .add(search: 'fiends', id: 'current_user) # add queries params-> http://example.com/users?search=friends&id=current_user
+            .del(:id) # remove queries params-> http://example.com/users?search=friends
+            .over(search: 'family') # override queries params-> http://example.com/users?search=family
+            .scheme('https') # override scheme -> https://example.com/users?search=family
+            .host('my-websity.com') # override host -> https://my-websity.com/users?search=family
+            .port('3001') # override port -> https://my-websity.com:3001/users?search=family
+            .to_url # build result
+
+### Support methods:
+
+* **append(string)**: <br/>
+  Add a new segment to Url. Argument for methods must be string or symbol. Alias for method: **path** or **fragment**.
+
+* **cut(string)**: <br/>
+    Delete a segment from Url. Argument for methods must be string or symbol.
+
+* **add(hash)**: <br/>
+    Add a params to query. Argument for methods must be hash. Alias for method: **query**.
+
+* **del(sym)**: <br/>
+    Delete a param from query. Argument for methods must symbol. Alias for method: **delete**.
+
+* **over(hash)**: <br/>
+    Override params from query. Argument for methods must hash. 
+
+* **scheme(sym)**: <br/>
+    Override a scheme. Argument for methods must string or symbol.
+
+* **host(sym)**: <br/>
+    Override a host. Argument for methods must string.
+
+* **port(sym)**: <br/>
+    Override a port. Argument for methods must string.
+
+* **to_s**: <br/>
+    Build a url. Retrun a url as string. Alias for method: **build_as_string**.
+
+* **to_url(sym)**: <br/>
+    Build a url. Retrun a url as URI. Alias for method: **build_as_url**.
 
 ## Development
 

@@ -89,6 +89,23 @@ RSpec.describe Urb::Builder do
     end
   end
 
+  describe '.cut' do
+    it 'should delete a segment for path' do
+      subject.append(:first, :second).cut(:first)
+      expect(subject.instance_variable_get(:@paths)).to eq(['second'])
+    end
+
+    it 'should do nothing when segments is not exist' do
+      subject.append(:first, :second).cut(:cat)
+      expect(subject.instance_variable_get(:@paths)).to eq(['first', 'second'])
+    end
+
+    it 'should delete segments for path and return a builder object' do
+      builder = subject.append(:first, 'second').cut(:first)
+      expect(builder.class).to eq(Urb::Builder)
+    end
+  end
+
   describe '.scheme' do
     it "should set a new scheme 'http'" do
       subject.scheme 'http'
